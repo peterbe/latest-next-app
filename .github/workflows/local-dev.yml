@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Start server in the background
-        run: npm start > /tmp/stdout.log 2> /tmp/stderr.log &
+        run: npm run dev > /tmp/stdout.log 2> /tmp/stderr.log &
 
       - name: View the home page
         run: |
