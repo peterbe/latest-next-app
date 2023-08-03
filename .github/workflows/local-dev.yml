@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Version info
+        run: node -v && npm -v
+
       - name: Start server in the background
         run: npm run dev > /tmp/stdout.log 2> /tmp/stderr.log &
 
@@ -43,6 +46,7 @@ jobs:
           cat /tmp/stdout.log
           echo "____STDERR____"
           cat /tmp/stderr.log
+
 
       - name: What got installed?
         run: |
