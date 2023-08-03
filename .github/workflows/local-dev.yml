@@ -1,0 +1,57 @@
+name: Local development
+
+# **What it does**: Can you start the local server like a writer would do?
+# **Why we have it**: Our CI is often heavily geared on testing in "production"
+#                     that historically we've been known to break local
+#                     development sometimes.
+# **Who does it impact**: Engineers, Contributors.
+
+on:
+  merge_group:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  local-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+
+      # - uses: ./.github/actions/node-npm-setup
+      - name: Install dependencies
+        run: npm install
+
+      - name: Version info
+        run: node -v && npm -v
+
+      - name: What got installed? (Before start)
+        run: |
+          ls -l node_modules/@next*
+
+      - name: Start server in the background
+        run: npm run dev > /tmp/stdout.log 2> /tmp/stderr.log &
+
+      - name: View the home page
+        run: |
+          echo "Going to sleep a little to wait for the server to start"
+          sleep 10
+          curl --fail --retry-connrefused --retry 5 http://localhost:3000/
+
+      # - name: Run basic tests
+      #   run: node .github/actions-scripts/test-local-dev.js
+
+      # - if: ${{ failure() }}
+      - name: Debug server outputs on errors
+        run: |
+          echo "____STDOUT____"
+          cat /tmp/stdout.log
+          echo "____STDERR____"
+          cat /tmp/stderr.log
+
+
+      - name: What got installed? (After start)
+        run: |
+          ls -l node_modules/@next*
