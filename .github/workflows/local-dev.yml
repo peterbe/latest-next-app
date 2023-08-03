@@ -43,3 +43,7 @@ jobs:
           cat /tmp/stdout.log
           echo "____STDERR____"
           cat /tmp/stderr.log
+
+      - name: What got installed?
+        run: |
+          ls -l node_modules/@next*
